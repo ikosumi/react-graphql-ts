@@ -1,19 +1,21 @@
 import {MikroORM} from '@mikro-orm/core';
-import {Post} from "./entities/Post";
 import mikroConfig from "./mikro-orm.config";
+import express from "express"
 
 const main = async () => {
     const orm = await MikroORM.init(mikroConfig);
     await orm.getMigrator().up();
-    const post = orm.em.create(Post, {title: 'My first post'});
-    await orm.em.persistAndFlush(post);
 
-    const posts = await orm.em.find(Post, {});
-    console.log(posts);
+    const app = express();
+    app.listen(4000, () => {
+        console.log('server started on port 4000');
+    });
+
+    app.get('/', (_, resp) => {
+        resp.send('hello, world');
+    })
 }
 
 main().catch(err => {
     console.log(err)
 });
-
-console.log("hello, world!!!")
